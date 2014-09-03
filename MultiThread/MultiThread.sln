@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vector", "MultiThread\Vector.csproj", "{7B321D1D-09F6-47A3-825C-0FF443D32ABE}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "lab2", "lab2", "{72B955AC-EAA4-484E-A4FC-573B3B135DC5}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "lab1", "lab1", "{72B955AC-EAA4-484E-A4FC-573B3B135DC5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
