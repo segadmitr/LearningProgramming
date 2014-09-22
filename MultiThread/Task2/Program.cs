@@ -13,14 +13,14 @@ namespace Task2
         /// <summary>
         /// Элементы которые необходимо обработать
         /// </summary>
-        static List<int> elements;
+        static List<int> s_elements;
 
         static void Main(string[] args)
         {
-            var lenchElements = getN();
-            elements = new List<int>(lenchElements);
+            var lenchElements = getCountElements();
+            s_elements = new List<int>(lenchElements);
 
-            var countThreads = getM();
+            var countThreads = getCountThreads();
 
             if (countThreads > lenchElements)
             {
@@ -32,29 +32,40 @@ namespace Task2
             var countElemnt = lenchElements / countThreads;
             var lost = lenchElements - countElemnt;
 
-            List<Thread> threadList = new List<Thread>();
+            var threadList = new List<Thread>();
             var startIndex = 0;
-           
+            var nextStartIndex = 0;
+            var stWatch = new Stopwatch();
+            stWatch.Start();
+
             for (var i = 0; i<countThreads; i++)
             {
                 var thread = new Thread(threadWorking);
                 threadList.Add(thread);
-                var nextStartIndex = startIndex + countElemnt;
+                nextStartIndex = startIndex + countElemnt;
                 thread.Start(new Tuple<int, int>(startIndex, nextStartIndex));
                 startIndex += nextStartIndex;
-            }    
+            }
+            threadWorking(new Tuple<int, int>(nextStartIndex, lenchElements - 1));
 
-            var stWatch = new Stopwatch();
-            stWatch.Start();
-            elements.ForEach(s => s = (int)Math.Pow(s+10, 10));
+            threadList.ForEach(s => s.Join());
+            
             stWatch.Stop();
             Console.WriteLine("Время обработки = '{0}'", stWatch.Elapsed);
             Console.ReadKey();
         }
 
-        private static void threadWorking(object obj)
+        private static void threadWorking(object startStopTuple)
         {
-            throw new NotImplementedException();
+            var tuple = startStopTuple as Tuple<int, int>;
+            if (tuple == null)
+                throw new ArgumentException();
+            var start = tuple.Item1;
+            var end = tuple.Item2;
+            for (var i = start; i < end; i++)
+            {
+                s_elements[i] = (int)Math.Pow(s_elements[i]+10, 10);
+            }
         }
 
         /// <summary>
@@ -66,7 +77,7 @@ namespace Task2
             var rnd = new Random();
             for (var i = 0; i < lenchElements; i++)
             {
-                elements.Add(rnd.Next(0, 100));
+                s_elements.Add(rnd.Next(0, 100));
             }
         }        
 
@@ -74,7 +85,7 @@ namespace Task2
         /// Получает количество элементов
         /// </summary>
         /// <returns></returns>
-        private static int getN()
+        private static int getCountElements()
         {            
             try
             {
@@ -82,7 +93,7 @@ namespace Task2
             }
             catch (InvalidOperationException ex)
             {
-                return getM();
+                return getCountElements();
             } 
         }
         
@@ -90,7 +101,7 @@ namespace Task2
         /// Получает количество потоков
         /// </summary>
         /// <returns></returns>
-        private static int getM()
+        private static int getCountThreads()
         {
             try
             {
@@ -98,7 +109,7 @@ namespace Task2
             }
             catch(InvalidOperationException ex)
             {
-                return getM();
+                return getCountThreads();
             } 
         }
 
