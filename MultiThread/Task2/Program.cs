@@ -25,7 +25,20 @@ namespace Task2
                 Console.WriteLine("Количество потоков сокращено на количество элементов");
             }
             generateElements(lenchElements);
+
+            var stWatch = new Stopwatch();
+           
+            stWatch.Start();
+
+            culateArray(lenchElements, countThreads);
             
+            stWatch.Stop();
+            Console.WriteLine("Время обработки = '{0}'", stWatch.Elapsed);
+            Console.ReadKey();
+        }
+
+        static void culateArray(int lenchElements, int countThreads)
+        {
             //Количество элементов для одного потока
             var lench4Tread = lenchElements / countThreads;
             //Количество нераспределенных элементов
@@ -38,8 +51,6 @@ namespace Task2
             var nextIndex = (curIndex + lench4Tread)-1;
             
             //начинаем отслеживать быстодействие
-            var stWatch = new Stopwatch();
-            stWatch.Start();
 
             for (var i = 1; i<countThreads; i++)
             {
@@ -60,10 +71,6 @@ namespace Task2
             
             //ожидаем завершение всех потоков
             threadList.ForEach(s => s.Join());
-            
-            stWatch.Stop();
-            Console.WriteLine("Время обработки = '{0}'", stWatch.Elapsed);
-            Console.ReadKey();
         }
 
         private static void threadWorking(object startStopTuple)
