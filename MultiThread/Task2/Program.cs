@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Diagnostics;
 using System.Threading;
 
@@ -28,26 +25,40 @@ namespace Task2
                 Console.WriteLine("Количество потоков сокращено на количество элементов");
             }
             generateElements(lenchElements);
-
-            var countElemnt = lenchElements / countThreads;
-            var lost = lenchElements - countElemnt;
+            
+            //Количество элементов для одного потока
+            var lench4Tread = lenchElements / countThreads;
+            //Количество нераспределенных элементов
+            var lost = lenchElements - (lench4Tread*countThreads);
 
             var threadList = new List<Thread>();
-            var startIndex = 0;
-            var nextStartIndex = 0;
+            
+            //инициализируем переменные индексов
+            var curIndex = 0;
+            var nextIndex = (curIndex + lench4Tread)-1;
+            
+            //начинаем отслеживать быстодействие
             var stWatch = new Stopwatch();
             stWatch.Start();
 
-            for (var i = 0; i<countThreads; i++)
+            for (var i = 1; i<countThreads; i++)
             {
                 var thread = new Thread(threadWorking);
                 threadList.Add(thread);
-                nextStartIndex = startIndex + countElemnt;
-                thread.Start(new Tuple<int, int>(startIndex, nextStartIndex));
-                startIndex += nextStartIndex;
+                thread.Start(new Tuple<int, int>(curIndex, nextIndex));
+                if (curIndex >= lenchElements - 1)
+                {
+                    break;
+                }
+                curIndex = nextIndex + 1;
+                nextIndex = curIndex + lench4Tread;
             }
-            threadWorking(new Tuple<int, int>(nextStartIndex, lenchElements - 1));
-
+            if (lost > 0)
+            {
+                threadWorking(new Tuple<int, int>(curIndex, lenchElements - 1));
+            }
+            
+            //ожидаем завершение всех потоков
             threadList.ForEach(s => s.Join());
             
             stWatch.Stop();
