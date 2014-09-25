@@ -12,8 +12,11 @@ namespace Task2
         /// </summary>
         static List<int> s_elements;
 
+        
+
         static void Main(string[] args)
         {
+            IWorker<int> _worker = new Worker<int>();
             var lenchElements = getCountElements();
             s_elements = new List<int>(lenchElements);
 
@@ -29,61 +32,13 @@ namespace Task2
             var stWatch = new Stopwatch();
            
             stWatch.Start();
-
-            culateArray(lenchElements, countThreads);
+            
+            _worker.CountThreads = countThreads;
+            _worker.Calculate(s_elements, (s,index) =>(int) Math.Pow(s + 10, 10));
             
             stWatch.Stop();
             Console.WriteLine("Время обработки = '{0}'", stWatch.Elapsed);
             Console.ReadKey();
-        }
-
-        static void culateArray(int lenchElements, int countThreads)
-        {
-            //Количество элементов для одного потока
-            var lench4Tread = lenchElements / countThreads;
-            //Количество нераспределенных элементов
-            var lost = lenchElements - (lench4Tread*countThreads);
-
-            var threadList = new List<Thread>();
-            
-            //инициализируем переменные индексов
-            var curIndex = 0;
-            var nextIndex = (curIndex + lench4Tread)-1;
-            
-            //начинаем отслеживать быстодействие
-
-            for (var i = 1; i<countThreads; i++)
-            {
-                var thread = new Thread(threadWorking);
-                threadList.Add(thread);
-                thread.Start(new Tuple<int, int>(curIndex, nextIndex));
-                if (curIndex >= lenchElements - 1)
-                {
-                    break;
-                }
-                curIndex = nextIndex + 1;
-                nextIndex = curIndex + lench4Tread;
-            }
-            if (lost > 0)
-            {
-                threadWorking(new Tuple<int, int>(curIndex, lenchElements - 1));
-            }
-            
-            //ожидаем завершение всех потоков
-            threadList.ForEach(s => s.Join());
-        }
-
-        private static void threadWorking(object startStopTuple)
-        {
-            var tuple = startStopTuple as Tuple<int, int>;
-            if (tuple == null)
-                throw new ArgumentException();
-            var start = tuple.Item1;
-            var end = tuple.Item2;
-            for (var i = start; i < end; i++)
-            {
-                s_elements[i] = (int)Math.Pow(s_elements[i]+10, 10);
-            }
         }
 
         /// <summary>
