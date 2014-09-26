@@ -16,20 +16,25 @@ namespace Task2
         /// </summary>
         /// <param name="countElementsInArray">Количество элементов в массиве</param>
         /// <param name="countParts">Количество частей</param>
-        List<List<int>>Separate(int countElementsInArray, int countParts);
+        IEnumerable<IEnumerable<int>>Separate(int countElementsInArray, int countParts);
     }
 
     internal class RangeSeparator : ISeparator
     {
-        public List<List<int>> Separate(int countElementsInArray, int countParts)
+        public IEnumerable<IEnumerable<int>> Separate(int countElementsInArray, int countParts)
         {
-            throw new NotImplementedException();
+            //Количество элементов для одного потока
+            var lench4Tread = lenchElements / countThreads;
+            //Количество нераспределенных элементов
+            var lost = lenchElements - (lench4Tread * countThreads);
+            var startIndex = 0;
+            var nextStartIndex = 0;
         }
     }
 
     internal class RoundSepator:ISeparator
     {
-        public List<List<int>> Separate(int countElementsInArray, int countParts)
+        public IEnumerable<IEnumerable<int>> Separate(int countElementsInArray, int countParts)
         {
             throw new NotImplementedException();
         }

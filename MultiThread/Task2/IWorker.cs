@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace Task2
 {
@@ -43,56 +41,35 @@ namespace Task2
         {
             _calculatedParam = calculatedParam;
             _doWithParamItem = doWithParamItem;
+            calculate(_calculatedParam.Count(), CountThreads);
         }
 
-        void culateArray(int lenchElements, int countThreads)
+        private void calculate(int lenchElements, int countThreads)
         {
-            //Количество элементов для одного потока
-            var lench4Tread = lenchElements / countThreads;
-            //Количество нераспределенных элементов
-            var lost = lenchElements - (lench4Tread * countThreads);
-
+            var separatedResult = Separator.Separate(lenchElements, countThreads);
             var threadList = new List<Thread>();
-
-            //инициализируем переменные индексов
-            var curIndex = 0;
-            var nextIndex = (curIndex + lench4Tread) - 1;
-
-            for (var i = 0; i < countThreads; i++)
+            foreach (var sepResult in separatedResult)
             {
                 var thread = new Thread(threadWorking);
                 threadList.Add(thread);
-                thread.Start(new Tuple<int, int>(curIndex, nextIndex));
-                if (curIndex >= lenchElements - 1)
-                {
-                    break;
-                }
-                curIndex = nextIndex + 1;
-                nextIndex = (curIndex + lench4Tread) - 1;
-            }
-            if (lost > 0)
-            {
-                threadWorking(new Tuple<int, int>(curIndex, lenchElements - 1));
+                thread.Start(sepResult);
             }
 
-            //ожидаем завершение всех потоков
             threadList.ForEach(s => s.Join());
         }
 
         /// <summary>
         /// обработка для одного потока
         /// </summary>
-        /// <param name="startStopTuple"></param>
-        private  void threadWorking(object startStopTuple)
+        private void threadWorking(object indexesParam)
         {
-            var tuple = startStopTuple as Tuple<int, int>;
-            if (tuple == null)
+            var indexes = indexesParam as IEnumerable<int>;
+            if (indexes == null)
                 throw new ArgumentException();
-            var start = tuple.Item1;
-            var end = tuple.Item2;
-            for (var i = start; i < end; i++)
+
+            foreach (var itemIndex in indexes)
             {
-                _calculatedParam[i] = _doWithParamItem(_calculatedParam[i],i);
+                _calculatedParam[itemIndex] = _doWithParamItem(_calculatedParam[itemIndex], itemIndex);
             }
         }
 
