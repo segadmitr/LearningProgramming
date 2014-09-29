@@ -46,13 +46,13 @@ namespace Task2
 
         private void calculate(int lenchElements, int countThreads)
         {
-            var separatedResult = Separator.Separate(lenchElements, countThreads);
+            Separator.Separate(lenchElements, countThreads);
             var threadList = new List<Thread>();
-            foreach (var sepResult in separatedResult)
+            foreach (var sepItemResult in Separator)
             {
                 var thread = new Thread(threadWorking);
                 threadList.Add(thread);
-                thread.Start(sepResult);
+                thread.Start(sepItemResult);
             }
 
             threadList.ForEach(s => s.Join());
