@@ -20,7 +20,7 @@ namespace Task2
         void Separate(int countElementsInArray, int countParts);
     }
 
-    internal class RangeSeparator : ISeparator
+    public class RangeSeparator : ISeparator
     {
         int _lench4Part = 0;
         int _lost = 0;
@@ -42,9 +42,13 @@ namespace Task2
 
         public IEnumerator<IEnumerable<int>> GetEnumerator()
         {
+           _startIndex = 0;
+           _endIndex = (_startIndex + _lench4Part) -1;
            for (var i = 0; i < _countParts; i++)
            {
                yield return new RangeEnumerator(_startIndex,_endIndex);
+               _startIndex = _endIndex+1;
+               _endIndex = (_startIndex + _lench4Part);
            }
         }
 
