@@ -10,14 +10,14 @@ namespace Task2
     /// <summary>
     /// интерфейс делителя вектора
     /// </summary>
-    public interface ISeparator : IEnumerable<IEnumerable<int>>
+    public interface ISeparator 
     {
         /// <summary>
         /// Находит индексы частей при делениии векора на части
         /// </summary>
         /// <param name="countElementsInArray">Количество элементов в массиве</param>
         /// <param name="countParts">Количество частей</param>
-        void Separate(int countElementsInArray, int countParts);
+        IEnumerable<IEnumerable<int>> Separate(int countElementsInArray, int countParts);
     }
 
     public class RangeSeparator : ISeparator
@@ -29,7 +29,7 @@ namespace Task2
         int _startIndex = 0;
         int _endIndex = 0;
 
-        public void  Separate(int countElementsInArray, int countParts)
+        public IEnumerable<IEnumerable<int>> Separate(int countElementsInArray, int countParts)
         {
             _countElementsInArray = countElementsInArray;
             _countParts = countParts;
@@ -38,27 +38,25 @@ namespace Task2
             _lench4Part = _countElementsInArray / _countParts;
             //Количество нераспределенных элементов
             _lost = _countElementsInArray - (_lench4Part * _countParts);
+            if (_lench4Part == 1)
+                _endIndex = 1;
+            else _endIndex = _lench4Part - 1;
+
+            return GetEnumerator();
         }
 
-        public IEnumerator<IEnumerable<int>> GetEnumerator()
-        {
-           _startIndex = 0;
-           _endIndex = (_startIndex + _lench4Part) -1;
+        private IEnumerable<IEnumerable<int>> GetEnumerator()
+        { 
            for (var i = 0; i < _countParts; i++)
            {
                yield return new RangeEnumerator(_startIndex,_endIndex);
-               _startIndex = _endIndex+1;
-               _endIndex = (_startIndex + _lench4Part);
+               _startIndex = _endIndex;
+               _endIndex = _startIndex + _lench4Part;
            }
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
+        }        
     }
 
-    class RangeEnumerator : IEnumerable<int>
+    public class RangeEnumerator : IEnumerable<int>
     {
         readonly int _startIndex;
         readonly int _endIndex;
@@ -84,9 +82,9 @@ namespace Task2
     }
 
 
-    internal class RoundSepator:ISeparator
+    public class RoundSepator:ISeparator
     {
-        public void Separate(int countElementsInArray, int countParts)
+        public IEnumerable<IEnumerable<int>> Separate(int countElementsInArray, int countParts)
         {
             throw new NotImplementedException();
         }
@@ -94,11 +92,6 @@ namespace Task2
         public IEnumerator<IEnumerable<int>> GetEnumerator()
         {
             throw new NotImplementedException();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
+        }        
     }
 }

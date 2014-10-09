@@ -20,15 +20,24 @@ namespace TestSeparatedByThread
         [TestMethod]
         public void TestMethod1()
         {
-            _separator.Separate(10, 10);
-            var separatedResult =  _separator.ToList();
-            var expectedResut = new List<IEnumerable<int>>();
+            var separatedResult = _separator.Separate(10, 10);
+            var expectedResut = new List<List<int>>();
             for (var i = 0; i < 10; i++)
             {
-                expectedResut.Add(new List<int>() {i});
+                expectedResut.Add(new List<int>() { i });
             }
-
-            CollectionAssert.AreEqual(expectedResut, separatedResult);
+            int indexCounter = 0;
+            foreach (var sepResItem in separatedResult)    
+            {
+                int innerIndexCounter = 0;
+                var expectedItem = expectedResut[indexCounter];
+                foreach (var item in sepResItem)
+                {
+                    Assert.AreEqual(item,expectedItem[innerIndexCounter]);
+                    innerIndexCounter++;
+                }
+                indexCounter++;
+            }
         }
     }
 }
