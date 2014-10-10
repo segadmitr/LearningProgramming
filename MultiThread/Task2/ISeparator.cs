@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Task2
 {
     /// <summary>
-    /// интерфейс делителя вектора
+    /// Интерфейс делителя вектора
     /// </summary>
     public interface ISeparator 
     {
@@ -20,6 +20,9 @@ namespace Task2
         IEnumerable<IEnumerable<int>> Separate(int countElementsInArray, int countParts);
     }
 
+    /// <summary>
+    /// Декомпозитор по диапазону
+    /// </summary>
     public class RangeSeparator : ISeparator
     {
         int _lench4Part = 0;
@@ -82,8 +85,10 @@ namespace Task2
             return GetEnumerator();
         }
     }
-
-
+    
+    /// <summary>
+    /// Круговой декомпозитор
+    /// </summary>
     public class RoundSepator:ISeparator
     {
         public IEnumerable<IEnumerable<int>> Separate(int countElementsInArray, int countParts)
