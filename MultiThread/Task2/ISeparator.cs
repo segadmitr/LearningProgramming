@@ -40,20 +40,22 @@ namespace Task2
             _lost = _countElementsInArray - (_lench4Part * _countParts);
             if (_lench4Part == 1)
                 _endIndex = 1;
-            else _endIndex = _lench4Part - 1;
+            else _endIndex = _lench4Part;
 
             return GetEnumerator();
         }
 
-        private IEnumerable<IEnumerable<int>> GetEnumerator()
-        { 
-           for (var i = 0; i < _countParts; i++)
-           {
-               yield return new RangeEnumerator(_startIndex,_endIndex);
-               _startIndex = _endIndex;
-               _endIndex = _startIndex + _lench4Part;
-           }
-        }        
+        IEnumerable<IEnumerable<int>> GetEnumerator()
+        {
+            for (var i = 0; i < _countParts; i++)
+            {
+                yield return new RangeEnumerator(_startIndex, _endIndex);
+                _startIndex = _endIndex;
+                _endIndex = _startIndex + _lench4Part;
+            }
+            if (_lost > 0)
+                yield return new RangeEnumerator(_startIndex, _countElementsInArray);
+        }
     }
 
     public class RangeEnumerator : IEnumerable<int>
