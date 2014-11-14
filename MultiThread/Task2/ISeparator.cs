@@ -91,14 +91,39 @@ namespace Task2
     /// </summary>
     public class RoundSepator:ISeparator
     {
+        private int _countElementsInArray;
+        private int _countParts;
+        private int _lench4Part;
+        private int _lost;
+        private int _endIndex;
+        private int _startIndex;
+
         public IEnumerable<IEnumerable<int>> Separate(int countElementsInArray, int countParts)
         {
-            throw new NotImplementedException();
+            _countElementsInArray = countElementsInArray;
+            _countParts = countParts;
+
+            //Количество элементов в одной части
+            _lench4Part = _countElementsInArray / _countParts;
+            //Количество нераспределенных элементов
+            _lost = _countElementsInArray - (_lench4Part * _countParts);
+            if (_lench4Part == 1)
+                _endIndex = 1;
+            else _endIndex = _lench4Part;
+
+            return GetEnumerator();
         }
 
-        public IEnumerator<IEnumerable<int>> GetEnumerator()
+        public IEnumerable<IEnumerable<int>> GetEnumerator()
         {
-            throw new NotImplementedException();
+            for (var i = 0; i < _countParts; i++)
+            {
+                yield return new RangeEnumerator(_startIndex, _endIndex);
+                _startIndex = _endIndex;
+                _endIndex = _startIndex + _lench4Part;
+            }
+            if (_lost > 0)
+                yield return new RangeEnumerator(_startIndex, _countElementsInArray);
         }        
     }
 }
