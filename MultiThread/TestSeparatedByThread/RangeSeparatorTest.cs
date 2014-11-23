@@ -28,7 +28,7 @@ namespace TestSeparatedByThread
             {
                 expectedResut.Add(new List<int> { i });
             }
-            equalsPart(separatedResult, expectedResut);
+            EqualsPart(separatedResult, expectedResut);
         }
 
         [TestMethod]
@@ -41,10 +41,10 @@ namespace TestSeparatedByThread
             expectedResut.Add(new List<int> {3, 4, 5});
             expectedResut.Add(new List<int> {6, 7, 8});
             expectedResut.Add(new List<int> {9});
-            equalsPart(separatedResult, expectedResut);
+            EqualsPart(separatedResult, expectedResut);
         }
 
-        void equalsPart(List<List<int>> separatedResult, List<List<int>> expectedResut)
+        public static void EqualsPart(List<List<int>> separatedResult, List<List<int>> expectedResut)
         {
             Assert.AreEqual(separatedResult.Count(), expectedResut.Count(),"Количество частей не совпадает");
             for (var i = 0; i < separatedResult.Count(); i++)

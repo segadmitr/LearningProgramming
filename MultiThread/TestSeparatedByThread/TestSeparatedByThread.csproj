@@ -55,6 +55,7 @@
   <ItemGroup>
     <Compile Include="RangeSeparatorTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RoundSeparatorTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MultiThread\Task1.csproj">

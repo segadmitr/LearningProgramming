@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Task2
 {
@@ -85,18 +81,18 @@ namespace Task2
             return GetEnumerator();
         }
     }
-    
+
+
     /// <summary>
     /// Круговой декомпозитор
     /// </summary>
-    public class RoundSepator:ISeparator
+    public class RoundSeparator : ISeparator
     {
-        private int _countElementsInArray;
-        private int _countParts;
-        private int _lench4Part;
-        private int _lost;
-        private int _endIndex;
-        private int _startIndex;
+        int _countElementsInArray;
+        int _countParts;
+        int _lench4Part;
+        int _lost;
+        int _startIndex;
 
         public IEnumerable<IEnumerable<int>> Separate(int countElementsInArray, int countParts)
         {
@@ -104,13 +100,10 @@ namespace Task2
             _countParts = countParts;
 
             //Количество элементов в одной части
-            _lench4Part = _countElementsInArray / _countParts;
+            _lench4Part = _countElementsInArray/_countParts;
             //Количество нераспределенных элементов
-            _lost = _countElementsInArray - (_lench4Part * _countParts);
-            if (_lench4Part == 1)
-                _endIndex = 1;
-            else _endIndex = _lench4Part;
-
+            _lost = _countElementsInArray - (_lench4Part*_countParts);
+            
             return GetEnumerator();
         }
 
@@ -118,12 +111,34 @@ namespace Task2
         {
             for (var i = 0; i < _countParts; i++)
             {
-                yield return new RangeEnumerator(_startIndex, _endIndex);
-                _startIndex = _endIndex;
-                _endIndex = _startIndex + _lench4Part;
+                yield return new RoundEnumerator(i, _lench4Part);
             }
-            if (_lost > 0)
-                yield return new RangeEnumerator(_startIndex, _countElementsInArray);
-        }        
+        }
+
+        public class RoundEnumerator : IEnumerable<int>
+        {
+            int _currIndex;
+            readonly int _lench4Part;
+
+            public RoundEnumerator(int startIndex,  int lench4Part)
+            {
+                _currIndex = startIndex;
+                _lench4Part = lench4Part;
+            }
+
+            public IEnumerator<int> GetEnumerator()
+            {
+                for (var i = 0; i < _lench4Part; i++)
+                {
+                    yield return _currIndex;
+                    _currIndex += _lench4Part;
+                }
+            }
+
+            IEnumerator IEnumerable.GetEnumerator()
+            {
+                return GetEnumerator();
+            }
+        }
     }
 }
