@@ -17,7 +17,7 @@ namespace TestSeparatedByThread
             _separator = new RoundSeparator();
         }
         [TestMethod]
-        public void TestMethod1()
+        public void RoundSeparatorTest1()
         {
             var separatedResult = _separator.Separate(10, 10).Select(s => s.ToList()).ToList();
 
@@ -30,7 +30,7 @@ namespace TestSeparatedByThread
         }
 
         [TestMethod]
-        public void TestMethod2()
+        public void RoundSeparatoTest2()
         {
             var separatedResult = _separator.Separate(9, 3).Select(s => s.ToList()).ToList();
 
@@ -44,13 +44,13 @@ namespace TestSeparatedByThread
         }
 
         [TestMethod]
-        public void TestMethod3()
+        public void RoundSeparatorTest3()
         {
             var separatedResult = _separator.Separate(6, 2).Select(s => s.ToList()).ToList();
 
             var expectedResut = new List<List<int>>();
 
-            expectedResut.Add(new List<int> { 0, 2, 4, 6 });
+            expectedResut.Add(new List<int> { 0, 2, 4 });
             expectedResut.Add(new List<int> { 1, 3, 5 });
 
             RangeSeparatorTest.EqualsPart(separatedResult, expectedResut);

@@ -19,7 +19,7 @@ namespace TestSeparatedByThread
         }
 
         [TestMethod]
-        public void TestMethod1()
+        public void RangeSeparatorTest1()
         {
             var separatedResult = _separator.Separate(10, 10).Select(s => s.ToList()).ToList();
                                    
@@ -32,7 +32,7 @@ namespace TestSeparatedByThread
         }
 
         [TestMethod]
-        public void TestMethod2()
+        public void RangeSeparatorTest2()
         {
             var separatedResult = _separator.Separate(10, 3).Select(s => s.ToList()).ToList();
 

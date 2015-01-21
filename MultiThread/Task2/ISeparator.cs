@@ -111,7 +111,7 @@ namespace Task2
         {
             for (var i = 0; i < _countParts; i++)
             {
-                yield return new RoundEnumerator(i, _lench4Part);
+                yield return new RoundEnumerator(i, _lench4Part, _countParts);
             }
         }
 
@@ -119,11 +119,13 @@ namespace Task2
         {
             int _currIndex;
             readonly int _lench4Part;
+            readonly int _countParts;
 
-            public RoundEnumerator(int startIndex,  int lench4Part)
+            public RoundEnumerator(int startIndex, int lench4Part, int countParts)
             {
                 _currIndex = startIndex;
                 _lench4Part = lench4Part;
+                _countParts = countParts;
             }
 
             public IEnumerator<int> GetEnumerator()
@@ -131,7 +133,7 @@ namespace Task2
                 for (var i = 0; i < _lench4Part; i++)
                 {
                     yield return _currIndex;
-                    _currIndex += _lench4Part;
+                    _currIndex += _countParts;
                 }
             }
 

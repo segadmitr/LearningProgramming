@@ -12,11 +12,10 @@ namespace Task2
         /// </summary>
         static List<int> s_elements;
 
-        
-
         static void Main(string[] args)
         {
             IWorker<int> _worker = new Worker<int>();
+            _worker.Separator = new RangeSeparator();
             var lenchElements = getCountElements();
             s_elements = new List<int>(lenchElements);
 
