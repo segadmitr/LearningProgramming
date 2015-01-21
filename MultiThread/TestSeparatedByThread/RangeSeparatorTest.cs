@@ -37,10 +37,34 @@ namespace TestSeparatedByThread
             var separatedResult = _separator.Separate(10, 3).Select(s => s.ToList()).ToList();
 
             var expectedResut = new List<List<int>>();
-            expectedResut.Add(new List<int> {0, 1, 2});
-            expectedResut.Add(new List<int> {3, 4, 5});
-            expectedResut.Add(new List<int> {6, 7, 8});
-            expectedResut.Add(new List<int> {9});
+            expectedResut.Add(new List<int> {0, 1, 2, 3});
+            expectedResut.Add(new List<int> {4, 5, 6});
+            expectedResut.Add(new List<int> {7, 8, 9});
+            EqualsPart(separatedResult, expectedResut);
+        }
+
+        [TestMethod]
+        public void RangeSeparatorTest3()
+        {
+            var separatedResult = _separator.Separate(7, 1).Select(s => s.ToList()).ToList();
+
+            var expectedResut = new List<List<int>>();
+            expectedResut.Add(new List<int> { 0, 1, 2, 3, 4, 5, 6 });
+            EqualsPart(separatedResult, expectedResut);
+        }
+
+        [TestMethod]
+        public void RangeSeparatorTest4()
+        {
+            var separatedResult = _separator.Separate(14, 6).Select(s => s.ToList()).ToList();
+
+            var expectedResut = new List<List<int>>();
+            expectedResut.Add(new List<int> { 0, 1, 2});
+            expectedResut.Add(new List<int> { 3, 4, 5});
+            expectedResut.Add(new List<int> { 6, 7 });
+            expectedResut.Add(new List<int> { 8, 9 });
+            expectedResut.Add(new List<int> { 10, 11 });
+            expectedResut.Add(new List<int> { 12, 13 });
             EqualsPart(separatedResult, expectedResut);
         }
 

@@ -21,25 +21,60 @@ namespace Task2
     /// </summary>
     public class RangeSeparator : ISeparator
     {
-        int _lench4Part = 0;
-        int _lost = 0;
-        int _countElementsInArray = 0;
-        int _countParts = 0;
-        int _startIndex = 0;
-        int _endIndex = 0;
+        #region private
+
+        /// <summary>
+        /// Минимальное количество элементов в одной чатси
+        /// </summary>
+        int _minLench4Part;
+
+        /// <summary>
+        /// Максимальное количество элементов в одной части
+        /// </summary>
+        int _maxLench4Part;
+        
+        /// <summary>
+        /// Количество оставшихся нераспределенных элементов
+        /// </summary>
+        int _lost;
+        
+        /// <summary>
+        /// Количество распределяемых элементов
+        /// </summary>
+        int _countElementsInArray;
+
+        /// <summary>
+        /// Количество частей
+        /// </summary>
+        int _countParts;
+
+        /// <summary>
+        /// Начальный индекс для текущей части
+        /// </summary>
+        int _curPartStartIndex;
+        
+        /// <summary>
+        /// Конечный индекс для текущей части
+        /// </summary>
+        int _curPartEndIndex;
+
+        #endregion
 
         public IEnumerable<IEnumerable<int>> Separate(int countElementsInArray, int countParts)
         {
             _countElementsInArray = countElementsInArray;
             _countParts = countParts;
+            
+            _minLench4Part = _countElementsInArray / _countParts;
+            _lost = _countElementsInArray - (_minLench4Part * _countParts);
+            if (_lost > 0)
+                _maxLench4Part = _minLench4Part + 1;
+            else
+                _maxLench4Part = _minLench4Part;
 
-            //Количество элементов в одной части
-            _lench4Part = _countElementsInArray / _countParts;
-            //Количество нераспределенных элементов
-            _lost = _countElementsInArray - (_lench4Part * _countParts);
-            if (_lench4Part == 1)
-                _endIndex = 1;
-            else _endIndex = _lench4Part;
+            if (_minLench4Part == 1)
+                _curPartEndIndex = 1;
+            else _curPartEndIndex = length4CurrentPart;
 
             return GetEnumerator();
         }
@@ -48,12 +83,21 @@ namespace Task2
         {
             for (var i = 0; i < _countParts; i++)
             {
-                yield return new RangeEnumerator(_startIndex, _endIndex);
-                _startIndex = _endIndex;
-                _endIndex = _startIndex + _lench4Part;
+                yield return new RangeEnumerator(_curPartStartIndex, _curPartEndIndex);
+                _lost--;
+                _curPartStartIndex = _curPartEndIndex;
+                _curPartEndIndex = _curPartStartIndex + length4CurrentPart;
             }
             if (_lost > 0)
-                yield return new RangeEnumerator(_startIndex, _countElementsInArray);
+                yield return new RangeEnumerator(_curPartStartIndex, _countElementsInArray);
+        }
+        
+        int length4CurrentPart 
+        {
+            get
+            {
+                return _lost > 0 ? _maxLench4Part : _minLench4Part;
+            }
         }
     }
 
@@ -90,18 +134,24 @@ namespace Task2
     {
         int _countElementsInArray;
         int _countParts;
+
+        /// <summary>
+        /// Количество элементов в одной части
+        /// </summary>
         int _lench4Part;
+        
+        /// <summary>
+        /// Оставшееся количество нераспределенных элементов
+        /// </summary>
         int _lost;
+
         int _startIndex;
 
         public IEnumerable<IEnumerable<int>> Separate(int countElementsInArray, int countParts)
         {
             _countElementsInArray = countElementsInArray;
             _countParts = countParts;
-
-            //Количество элементов в одной части
             _lench4Part = _countElementsInArray/_countParts;
-            //Количество нераспределенных элементов
             _lost = _countElementsInArray - (_lench4Part*_countParts);
             
             return GetEnumerator();
