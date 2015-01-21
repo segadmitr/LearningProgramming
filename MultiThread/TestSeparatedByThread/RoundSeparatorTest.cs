@@ -30,7 +30,7 @@ namespace TestSeparatedByThread
         }
 
         [TestMethod]
-        public void RoundSeparatoTest2()
+        public void RoundSeparatorTest2()
         {
             var separatedResult = _separator.Separate(9, 3).Select(s => s.ToList()).ToList();
 
@@ -55,5 +55,46 @@ namespace TestSeparatedByThread
 
             RangeSeparatorTest.EqualsPart(separatedResult, expectedResut);
         }
+
+        [TestMethod]
+        public void RoundSeparatorTest4()
+        {
+            var separatedResult = _separator.Separate(3, 1).Select(s => s.ToList()).ToList();
+
+            var expectedResut = new List<List<int>>();
+
+            expectedResut.Add(new List<int> { 0, 1, 2 });
+
+            RangeSeparatorTest.EqualsPart(separatedResult, expectedResut);
+        }
+
+        [TestMethod]
+        public void RoundSeparatorTest5()
+        {
+            var separatedResult = _separator.Separate(3, 2).Select(s => s.ToList()).ToList();
+
+            var expectedResut = new List<List<int>>();
+
+            expectedResut.Add(new List<int> { 0, 2 });
+            expectedResut.Add(new List<int> { 1 });
+
+            RangeSeparatorTest.EqualsPart(separatedResult, expectedResut);
+        }
+
+        [TestMethod]
+        public void RoundSeparatorTest6()
+        {
+            var separatedResult = _separator.Separate(7, 4).Select(s => s.ToList()).ToList();
+
+            var expectedResut = new List<List<int>>();
+
+            expectedResut.Add(new List<int> { 0, 4 });
+            expectedResut.Add(new List<int> { 1, 5 });
+            expectedResut.Add(new List<int> { 2, 6 });
+            expectedResut.Add(new List<int> { 3 });
+
+            RangeSeparatorTest.EqualsPart(separatedResult, expectedResut);
+        }
+
     }
 }

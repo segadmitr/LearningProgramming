@@ -132,27 +132,41 @@ namespace Task2
     /// </summary>
     public class RoundSeparator : ISeparator
     {
+        /// <summary>
+        /// Количество распределяемых элементов
+        /// </summary>
         int _countElementsInArray;
+        
+        /// <summary>
+        /// Количество частей
+        /// </summary>
         int _countParts;
 
         /// <summary>
-        /// Количество элементов в одной части
+        /// Минимальное количество элементов в одной чатси
         /// </summary>
-        int _lench4Part;
+        int _minLench4Part;
+
+        /// <summary>
+        /// Максимальное количество элементов в одной части
+        /// </summary>
+        int _maxLench4Part;
         
         /// <summary>
         /// Оставшееся количество нераспределенных элементов
         /// </summary>
         int _lost;
 
-        int _startIndex;
-
         public IEnumerable<IEnumerable<int>> Separate(int countElementsInArray, int countParts)
         {
             _countElementsInArray = countElementsInArray;
             _countParts = countParts;
-            _lench4Part = _countElementsInArray/_countParts;
-            _lost = _countElementsInArray - (_lench4Part*_countParts);
+            _minLench4Part = _countElementsInArray / _countParts;
+            _lost = _countElementsInArray - (_minLench4Part * _countParts);
+            if (_lost > 0)
+                _maxLench4Part = _minLench4Part + 1;
+            else
+                _maxLench4Part = _minLench4Part;
             
             return GetEnumerator();
         }
@@ -161,7 +175,16 @@ namespace Task2
         {
             for (var i = 0; i < _countParts; i++)
             {
-                yield return new RoundEnumerator(i, _lench4Part, _countParts);
+                yield return new RoundEnumerator(i, length4CurrentPart, _countParts);
+                _lost--;
+            }
+        }
+
+        int length4CurrentPart
+        {
+            get
+            {
+                return _lost > 0 ? _maxLench4Part : _minLench4Part;
             }
         }
 
