@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using Separators;
 
 namespace Task2
 {
@@ -62,7 +63,7 @@ namespace Task2
             {
                 return getIntFromConsole("Kоличество Элементов массива");
             }
-            catch (InvalidOperationException ex)
+            catch (InvalidOperationException)
             {
                 return getCountElements();
             } 
@@ -78,7 +79,7 @@ namespace Task2
             {
                 return getIntFromConsole("Kоличество потоков");
             }
-            catch(InvalidOperationException ex)
+            catch(InvalidOperationException)
             {
                 return getCountThreads();
             } 

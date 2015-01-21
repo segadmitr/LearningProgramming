@@ -1,34 +1,34 @@
-п»їusing System;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
+using System.Linq;
 
-namespace Task2
+namespace Separators
 {
     /// <summary>
-    /// РРЅС‚РµСЂС„РµР№СЃ РѕР±СЂР°Р±РѕС‚С‡РёРєР°
+    /// Интерфейс обработчика
     /// </summary>
     /// <typeparam name="T"></typeparam>
     public interface IWorker<T>
     {
         /// <summary>
-        /// Р Р°СЃС‡РёС‚Р°С‚СЊ
+        /// Расчитать
         /// </summary>
         void Calculate(List<T> calculatedParam, Func<T,int,T> doWithParamItem);
 
         /// <summary>
-        /// РљРѕР»РёС‡РµСЃС‚РІРѕ РїРѕС‚РѕРєРѕРІ 
+        /// Количество потоков 
         /// </summary>
         int CountThreads { get; set; }
 
         /// <summary>
-        /// Р”РµР»РёС‚РµР»СЊ РґРёР°РїР°Р·РѕРЅР°
+        /// Делитель диапазона
         /// </summary>
         ISeparator Separator { get; set; }
     }
 
     /// <summary>
-    ///РћР±СЂР°Р±РѕС‚С‡РёРє СЌР»РµРјРµРЅС‚РѕРІ 
+    ///Обработчик элементов 
     /// </summary>
     /// <typeparam name="T"></typeparam>
     public class Worker<T> : IWorker<T>
@@ -59,7 +59,7 @@ namespace Task2
         }
 
         /// <summary>
-        /// РѕР±СЂР°Р±РѕС‚РєР° РґР»СЏ РѕРґРЅРѕРіРѕ РїРѕС‚РѕРєР°
+        /// обработка для одного потока
         /// </summary>
         private void threadWorking(object indexesParam)
         {

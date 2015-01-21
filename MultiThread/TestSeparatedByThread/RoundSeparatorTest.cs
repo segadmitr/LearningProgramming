@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq;
-using Task2;
+using Separators;
 
 namespace TestSeparatedByThread
 {

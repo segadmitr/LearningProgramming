@@ -58,13 +58,9 @@
     <Compile Include="RoundSeparatorTest.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MultiThread\Task1.csproj">
-      <Project>{7b321d1d-09f6-47a3-825c-0ff443d32abe}</Project>
-      <Name>Task1</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Task2\Task2.csproj">
-      <Project>{779c80ee-76ee-46d5-a9e0-c1273336b94d}</Project>
-      <Name>Task2</Name>
+    <ProjectReference Include="..\Separators\Separators.csproj">
+      <Project>{1cb2ec8f-7782-42e8-bef2-e9f561415b06}</Project>
+      <Name>Separators</Name>
     </ProjectReference>
   </ItemGroup>
   <Choose>
