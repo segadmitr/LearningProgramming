@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
+using System.Dynamic;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -12,6 +15,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Microsoft.CSharp.RuntimeBinder;
 
 namespace Task3
 {
@@ -37,15 +41,26 @@ namespace Task3
         /// </summary>
         List<int> _generatedElements = new List<int>();
         
+        /// <summary>
+        /// Результат пересчета
+        /// </summary>
+        ObservableCollection<ResultForThreads> _resultCalculation = new ObservableCollection<ResultForThreads>();
+
         #endregion
         
         public MainWindow()
         {
+            //dynamic d = new ResultForThreads();
+
+            //((ResultForThreads) d).TrySetMember(new MemberBinder("Name", false),1);
+            //ResultCalculation.Add(d);
+            
             InitializeComponent();
+
             generateElements(_lengthsElements.Max());
         }
 
-        /// <summary>
+        /// <summary> 
         /// Генерирует элементы массива
         /// </summary>
         /// <param name="lenchElements"></param>
@@ -70,11 +85,19 @@ namespace Task3
             }
         }
 
+        /// <summary>
+        /// Результат пересчета
+        /// </summary>
+        public ObservableCollection<ResultForThreads> ResultCalculation
+        {
+            get { return _resultCalculation; }
+            set { _resultCalculation = value; }
+        }
 
 
         private void RunBtn_Click(object sender, RoutedEventArgs e)
         {
-
+           
         }
                 
     }
