@@ -2,7 +2,12 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="MainWindow" Height="350" Width="525">
-    <Grid>
-        
+    <Grid Margin="2">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="auto"></RowDefinition>
+        </Grid.RowDefinitions>
+        <DataGrid Grid.Row="0" x:Name="ResultDGrd" />
+        <Button x:Name="RunBtn" Grid.Row="1" Height="25" Width="100" HorizontalAlignment="Right" Click="RunBtn_Click">Рассчитать</Button>
     </Grid>
 </Window>
