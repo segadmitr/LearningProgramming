@@ -12,9 +12,15 @@ namespace Task3
    /// </summary>
     public class ResultForThreads : DynamicObject
     {
-        Dictionary<string, object> dictionary = new Dictionary<string, object>();
-         
-        public override bool TryGetMember(GetMemberBinder binder, out object result)
+       readonly int _length;
+       Dictionary<string, object> dictionary = new Dictionary<string, object>();
+
+       public ResultForThreads(int length)
+       {
+           _length = length;
+       }
+
+       public override bool TryGetMember(GetMemberBinder binder, out object result)
         {
             var name = binder.Name.ToLower();
             return dictionary.TryGetValue(name, out result);
@@ -25,5 +31,10 @@ namespace Task3
             dictionary[binder.Name.ToLower()] = value;
             return true;
         }
+
+       public int Length 
+       {
+           get { return _length; }
+       }
     }
 }

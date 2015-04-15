@@ -37,6 +37,7 @@ namespace Separators
         Func<T,int, T> _doWithParamItem;
         int _countThreads;
 
+        //TODO List<T> calculatedParam переделать на IEnumerable
         public void Calculate(List<T> calculatedParam, Func<T,int,T> doWithParamItem)
         {
             _calculatedParam = calculatedParam;

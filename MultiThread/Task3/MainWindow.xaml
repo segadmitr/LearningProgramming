@@ -7,13 +7,9 @@
             <RowDefinition Height="*"></RowDefinition>
             <RowDefinition Height="auto"></RowDefinition>
         </Grid.RowDefinitions>
-        <DataGrid Grid.Row="0" x:Name="ResultDGrd" AutoGenerateColumns="True" ItemsSource="{Binding Path=ResultCalculation, ElementName=WindowCalculations}" >
+        <DataGrid Grid.Row="0" x:Name="ResultDGrd" AutoGenerateColumns="False" ItemsSource="{Binding Path=ResultCalculation, ElementName=WindowCalculations}" >
             <DataGrid.Columns>
-                <DataGridTextColumn>
-                    <DataGridTextColumn.Binding>
-                        <Binding Path="Name" ></Binding>
-                    </DataGridTextColumn.Binding>
-                </DataGridTextColumn>
+                <DataGridTextColumn Binding="{Binding Path=Length}" IsReadOnly="True" Header="Кол.элем.\потоки" ></DataGridTextColumn>
             </DataGrid.Columns>
         </DataGrid>
         <Button x:Name="RunBtn" Grid.Row="1" Height="25" Width="100" HorizontalAlignment="Right" Click="RunBtn_Click">Рассчитать</Button>
