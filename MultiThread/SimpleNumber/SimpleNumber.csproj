@@ -4,14 +4,13 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{779C80EE-76EE-46D5-A9E0-C1273336B94D}</ProjectGuid>
+    <ProjectGuid>{20DA75BD-237A-4BFB-B188-2A3E0C3E910F}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Task2</RootNamespace>
-    <AssemblyName>Task2</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <RootNamespace>SimpleNumber</RootNamespace>
+    <AssemblyName>SimpleNumber</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -49,16 +48,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="ReadMe.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\Addons\Addons.csproj">
-      <Project>{807e1cdf-e660-4351-b0a4-17a667cdd7d7}</Project>
+      <Project>{807E1CDF-E660-4351-B0A4-17A667CDD7D7}</Project>
       <Name>Addons</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Separators\Separators.csproj">
-      <Project>{1cb2ec8f-7782-42e8-bef2-e9f561415b06}</Project>
-      <Name>Separators</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

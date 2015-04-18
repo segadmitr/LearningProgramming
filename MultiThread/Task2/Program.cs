@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using Addons;
 using Separators;
 
 namespace Task2
@@ -61,7 +62,7 @@ namespace Task2
         {            
             try
             {
-                return getIntFromConsole("Kоличество Элементов массива");
+                return ConsoleAdons.GetIntFromConsole("Kоличество Элементов массива");
             }
             catch (InvalidOperationException)
             {
@@ -77,32 +78,12 @@ namespace Task2
         {
             try
             {
-                return getIntFromConsole("Kоличество потоков");
+                return ConsoleAdons.GetIntFromConsole("Kоличество потоков");
             }
             catch(InvalidOperationException)
             {
                 return getCountThreads();
             } 
         }
-
-        /// <summary>
-        /// Получает с консоли целое число
-        /// </summary>
-        /// <param name="paramName">Имя параметра</param>
-        /// <returns></returns>
-        /// <exception cref="InvalidOperationException">
-        /// Невозможно привести к целому числу
-        /// </exception>
-        private static int getIntFromConsole(string paramName)
-        {
-            Console.WriteLine("Введите параметр '{0}'",paramName);
-            var Str = Console.ReadLine();
-            int NInt;
-            if (Int32.TryParse(Str, out NInt))
-                return NInt;
-            Console.WriteLine("Ошибка:'Параметр {0} должен быть целым числом'",paramName);
-            throw new InvalidOperationException();
-        }
-
     }
 }
