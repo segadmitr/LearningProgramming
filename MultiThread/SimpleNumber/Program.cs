@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,17 +11,32 @@ namespace SimpleNumber
 {
     class Program
     {
+        static IEnumerable<int> _baseNumbers;
+
         static void Main(string[] args)
         {
             try
             {
                 var start = getStartRange();
                 var end = getEndRange();
-                if (start > end || start < 1 || start == end)
+                if (start > end && start < 1 && start == end)
                     throw new InvalidOperationException("Неверные данные относительно начала и конца диапазона");
+                
+                var sqrtEnd = Convert.ToInt32(Math.Round(Math.Sqrt(end)));
+                
+                //базовые простые числа
+                _baseNumbers = getBaseSimpleNumbers(2, sqrtEnd);
+                var stWatch = new Stopwatch();
+                
+                stWatch.Restart();
+                var simpleNumbers = getSimpleNumbers(sqrtEnd, end);
+                stWatch.Stop();
 
-                var userRange = getRange(start, end);
+                var time = stWatch.ElapsedMilliseconds;
+                var allSimpleNumbers = _baseNumbers.Where(s => s >= start).Union(simpleNumbers).ToList();
+                Console.WriteLine("Результат последовательного пересчета прав:{0}",time);
 
+                Console.ReadKey();
             }
             catch (Exception ex)
             {
@@ -28,6 +44,40 @@ namespace SimpleNumber
                 Console.ReadKey();
             }
             Console.ReadKey();
+        }
+
+        static IEnumerable<int> getSimpleNumbers(int sqrtEnd, int end)
+        {
+            var range = getRange(sqrtEnd, end).ToList();
+            
+            foreach(var baseNumber in _baseNumbers)
+            {
+                range.RemoveAll(rangeItem => rangeItem % baseNumber == 0);
+            }
+
+            return range;
+        }
+
+        /// <summary>
+        /// Метод получает базовые простые числа  
+        /// </summary>
+        /// <param name="start">Начало диапазона</param>
+        /// <param name="end">Конец диапазона</param>
+        /// <returns>Простые числа</returns>
+        static IEnumerable<int> getBaseSimpleNumbers(int start, int end)
+        {
+            if (start > end && start < 1 && start == end)
+                throw new InvalidOperationException("Неверные данные относительно начала и конца диапазона");
+            var range = getRange(start, end).ToList();
+            var simpleNumbers = new List<int>();
+
+            for (var i = start; range.Any(); i = range.FirstOrDefault())
+            {
+                simpleNumbers.Add(i);
+                range.Remove(i);
+                range.RemoveAll(rangeItem => rangeItem % i == 0);
+            }
+            return simpleNumbers;
         }
 
         /// <summary>
@@ -70,7 +120,7 @@ namespace SimpleNumber
         {
             try
             {
-                return ConsoleAdons.GetIntFromConsole("Стартовый элемент начала диапазона");
+                return ConsoleAdons.GetIntFromConsole("Элемент конца диапазона");
             }
             catch (InvalidOperationException)
             {
