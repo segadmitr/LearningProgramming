@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Addons;
+using Separators;
 
 namespace SimpleNumber
 {
@@ -27,14 +25,48 @@ namespace SimpleNumber
                 //базовые простые числа
                 _baseNumbers = getBaseSimpleNumbers(2, sqrtEnd);
                 var stWatch = new Stopwatch();
+
+                #region Последовательный пересчет прав
                 
                 stWatch.Restart();
                 var simpleNumbers = getSimpleNumbers(sqrtEnd, end);
                 stWatch.Stop();
 
-                var time = stWatch.ElapsedMilliseconds;
+                Console.WriteLine("Результат последовательного пересчета прав:{0}", stWatch.ElapsedMilliseconds);
+
+                #endregion
+
+                #region Параллельный алгоритм №1: декомпозиция по данным
+
+                IWorker<int> _worker = new Worker<int>();
+                _worker.Separator = new RangeSeparator();
+                _worker.CountThreads = 3;
+                
+                stWatch.Restart();
+                var sourceList = getRange(sqrtEnd, end).ToList();
+                var simpleNumbers2 = _worker.Calculate(sourceList, (s) =>
+                    {
+                        var list = s.ToList();
+                        foreach (var baseNumber in _baseNumbers)
+                        {
+                            list.RemoveAll(rangeItem => rangeItem % baseNumber == 0);
+                        }
+                        return list;
+                    });
+                stWatch.Stop();
+
+                Console.WriteLine("Параллельный алгоритм №1: декомпозиция по данным результат:{0}", stWatch.ElapsedMilliseconds);
+                
+                #endregion 
+
+                #region Validation
+
+                if (simpleNumbers.Count() != simpleNumbers2.Count)
+                    throw new ArgumentNullException();
+                
+                #endregion
+
                 var allSimpleNumbers = _baseNumbers.Where(s => s >= start).Union(simpleNumbers).ToList();
-                Console.WriteLine("Результат последовательного пересчета прав:{0}",time);
 
                 Console.ReadKey();
             }
@@ -93,8 +125,6 @@ namespace SimpleNumber
                 yield return i;
             }
         }
-
-        
 
         /// <summary>
         /// Получает начало диапазона

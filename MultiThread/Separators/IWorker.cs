@@ -23,7 +23,7 @@ namespace Separators
         /// </summary>
         /// <param name="calculatedParam">Все данные</param>
         /// <param name="doWithSeparatedPart">Разделенная часть данных</param>
-        void Calculate(List<T> calculatedParam, Func<IEnumerable<int>, IEnumerable<T>> doWithSeparatedPart);
+        List<T> Calculate(List<T> calculatedParam, Func<IEnumerable<T>, IEnumerable<T>> doWithSeparatedPart);
 
         /// <summary>
         /// Количество потоков 
@@ -42,7 +42,12 @@ namespace Separators
     /// <typeparam name="T"></typeparam>
     public class Worker<T> : IWorker<T>
     {
+        /// <summary>
+        /// Список элементов который надо преобразовать
+        ///  или расчитать в нескольких потоках
+        /// </summary>
         List<T> _calculatedParam = new List<T>();
+        
         int _countThreads;
 
         #region Модификация элемента списка
@@ -52,7 +57,6 @@ namespace Separators
         /// </summary>
         Func<T, int, T> _doWithParamItem;
 
-        //TODO List<T> calculatedParam переделать на IEnumerable
         public void Calculate(List<T> calculatedParam, Func<T, int, T> doWithParamItem)
         {
             _calculatedParam = calculatedParam;
@@ -78,14 +82,28 @@ namespace Separators
         #endregion
 
         #region Расчет части  списка, разделеннного делителем
+        
+        /// <summary>
+        /// делегат расчета одной части
+        /// </summary>
+        Func<IEnumerable<T>, IEnumerable<T>> _doWithSeparatedPart;
+        
+        /// <summary>
+        /// Результат расчета всех частей
+        /// </summary>
+        List<T> _result = new List<T>();
+        //TODO сделать синхронизацию добавления 
+        /// <summary>
+        /// Список блокировок для синхронизации
+        /// </summary>
+        List<int> _locedList = new List<int>();
 
-        Func<IEnumerable<int>, IEnumerable<T>> _doWithSeparatedPart;
-
-        public void Calculate(List<T> calculatedParam, Func<IEnumerable<int>, IEnumerable<T>> doWithSeparatedPart)
+        public List<T> Calculate(List<T> calculatedParam, Func<IEnumerable<T>, IEnumerable<T>> doWithSeparatedPart)
         {
             _calculatedParam = calculatedParam;
             _doWithSeparatedPart = doWithSeparatedPart;
             calculate(_calculatedParam.Count(), CountThreads, threadWorkForSepList);
+            return _result;
         }
 
         /// <summary>
@@ -97,7 +115,12 @@ namespace Separators
             var indexes = indexesParam as IEnumerable<int>;
             if (indexes == null)
                 throw new ArgumentException();
-            var d = _doWithSeparatedPart(indexes);
+            var indexesResult = indexes.Select(index => _calculatedParam[index]);
+            var separatedPartResult = _doWithSeparatedPart(indexesResult);
+            lock (_locedList)
+            {
+                _result.AddRange(separatedPartResult);
+            }
         }
 
         #endregion
