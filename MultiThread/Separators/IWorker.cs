@@ -26,6 +26,13 @@ namespace Separators
         List<T> Calculate(List<T> calculatedParam, Func<IEnumerable<T>, IEnumerable<T>> doWithSeparatedPart);
 
         /// <summary>
+        /// Действие с элементом списка
+        /// </summary>
+        /// <param name="calculatedParam"></param>
+        /// <param name="actionWithParamItem"></param>
+        void Calculate(List<T> calculatedParam, Action<T, int> actionWithParamItem);
+
+        /// <summary>
         /// Количество потоков 
         /// </summary>
         int CountThreads { get; set; }
@@ -120,6 +127,35 @@ namespace Separators
             lock (_locedList)
             {
                 _result.AddRange(separatedPartResult);
+            }
+        }
+
+        #endregion
+
+        #region Расчет части  списка, разделеннного делителем
+
+        Action<T, int> _actionWithParamItem;
+
+        public void Calculate(List<T> calculatedParam, Action<T, int> actionWithParamItem)
+        {
+            _calculatedParam = calculatedParam;
+            _actionWithParamItem = actionWithParamItem;
+            calculate(_calculatedParam.Count(), CountThreads, threadWorkForActionItem);
+        }
+
+        /// <summary>
+        /// Действие для элементов одного потока
+        /// </summary>
+        /// <param name="indexesParam"></param>
+        void threadWorkForActionItem(object indexesParam)
+        {
+            var indexes = indexesParam as IEnumerable<int>;
+            if (indexes == null)
+                throw new ArgumentException();
+
+            foreach (var itemIndex in indexes)
+            {
+                _actionWithParamItem(_calculatedParam[itemIndex], itemIndex);
             }
         }
 

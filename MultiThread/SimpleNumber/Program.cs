@@ -11,6 +11,9 @@ namespace SimpleNumber
     {
         static IEnumerable<int> _baseNumbers;
 
+        [ThreadStatic]
+        static List<int> s_threadlist;
+
         static void Main(string[] args)
         {
             try
@@ -40,7 +43,7 @@ namespace SimpleNumber
 
                 IWorker<int> _worker = new Worker<int>();
                 _worker.Separator = new RangeSeparator();
-                _worker.CountThreads = 3;
+                _worker.CountThreads = _baseNumbers.Count();
                 
                 stWatch.Restart();
                 var sourceList = getRange(sqrtEnd, end).ToList();
@@ -58,6 +61,35 @@ namespace SimpleNumber
                 Console.WriteLine("Параллельный алгоритм №1: декомпозиция по данным результат:{0}", stWatch.ElapsedMilliseconds);
                 
                 #endregion 
+
+                
+
+                #region Параллельный алгоритм №2: декомпозиция набора простых чисел
+                IWorker<int> worker2 = new Worker<int>();
+                worker2.Separator = new RangeSeparator();
+                worker2.CountThreads = _baseNumbers.Count();
+                var baseNumbers2 = _baseNumbers.ToList();
+                
+                stWatch.Restart();
+                var sourceList2 = getRange(sqrtEnd, end).ToList();
+
+                //объект для блокировки
+                var loced = "Lock";
+                
+                worker2.Calculate(baseNumbers2, (baseNumber, index) =>
+                {
+                    (s_threadlist = new List<int>()).AddRange(sourceList2);
+                    var forDel = s_threadlist.Where(rangeItem => rangeItem % baseNumber == 0).ToList();
+                    lock (loced)
+                    {
+                        forDel.ForEach(s => sourceList2.Remove(s));
+                    }
+                });
+                
+                stWatch.Stop();
+
+                Console.WriteLine("Параллельный алгоритм №2: декомпозиция набора простых чисел:{0}", stWatch.ElapsedMilliseconds);
+                #endregion
 
                 #region Validation
 
