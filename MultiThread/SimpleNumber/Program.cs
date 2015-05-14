@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using Addons;
 using Separators;
 
@@ -14,6 +15,7 @@ namespace SimpleNumber
         [ThreadStatic]
         static List<int> s_threadlist;
 
+        
         static void Main(string[] args)
         {
             try
@@ -62,8 +64,6 @@ namespace SimpleNumber
                 
                 #endregion 
 
-                
-
                 #region Параллельный алгоритм №2: декомпозиция набора простых чисел
                 IWorker<int> worker2 = new Worker<int>();
                 worker2.Separator = new RangeSeparator();
@@ -91,9 +91,42 @@ namespace SimpleNumber
                 Console.WriteLine("Параллельный алгоритм №2: декомпозиция набора простых чисел:{0}", stWatch.ElapsedMilliseconds);
                 #endregion
 
+                #region Параллельный алгоритм №3: применение пула потоков
+                
+                stWatch.Restart();
+                var sourceList3 = getRange(sqrtEnd, end).ToList();
+                var events = new List<ManualResetEvent>();
+                WaitCallback action = objectParam =>
+                    {
+                        var baseNumber = (int) ((object[]) objectParam)[0];
+                        var resetEvent = (ManualResetEvent)((object[])objectParam)[1];
+                        (s_threadlist = new List<int>()).AddRange(sourceList3);
+                        var forDel = s_threadlist.Where(rangeItem => rangeItem % baseNumber == 0).ToList();
+                        lock (loced)
+                        {
+                            forDel.ForEach(s => sourceList3.Remove(s));
+                        }
+                        resetEvent.Set();
+                    };
+                
+
+                foreach (var baseNumber in _baseNumbers)
+                {
+                    var manualEvent = new ManualResetEvent(false);
+                    events.Add(manualEvent);
+                    ThreadPool.QueueUserWorkItem(action, new object[] { baseNumber, manualEvent });
+                }
+                WaitHandle.WaitAll(events.ToArray());
+                stWatch.Stop();
+
+                Console.WriteLine("Параллельный алгоритм №3: применение пула потоков:{0}", stWatch.ElapsedMilliseconds);
+                #endregion
+
                 #region Validation
 
-                if (simpleNumbers.Count() != simpleNumbers2.Count)
+                if (simpleNumbers.Count() != simpleNumbers2.Count()
+                    && sourceList2.Count() != simpleNumbers.Count()
+                    && sourceList3.Count() != simpleNumbers.Count())
                     throw new ArgumentNullException();
                 
                 #endregion
