@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace BufferWorkers
 {
@@ -35,9 +36,17 @@ namespace BufferWorkers
         public void Write()
         {
             State = StateWorker.Work;
-            foreach (var message in Messages)
+            while(Messages.Any())
             {
-                Buffer.Value = message;
+                lock ("write")
+                {
+                    if (Buffer.IsEmpty)
+                    {
+                        var message = Messages.FirstOrDefault();
+                        Buffer.Value = message;
+                        Messages.Remove(message);
+                    }
+                }
             }
             State = StateWorker.Finish;
         }

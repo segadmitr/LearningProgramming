@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using Addons;
 using BufferWorkers;
 
@@ -12,15 +13,68 @@ namespace Task1
         static List<Reader> readerList = new List<Reader>();
         static List<Writer> writerList = new List<Writer>();
 
+        static int writersCount;
+        static int readersCount;
+        static int messagesCount;
+
         static void Main(string[] args)
         {
-            var writersCount = getCountWriters();
-            var readersCount = getCountReaders();
-            var messagesCount = getCountMessages();
+            writersCount = getCountWriters();
+            readersCount = getCountReaders();
+            messagesCount = getCountMessages();
 
             initializeWriters(writersCount, messagesCount);
             initializeReaders(readersCount);
+
+
+            var taskList = new List<Task>();
+
+            readerList.ForEach(s =>
+                {
+                    var readTask = Task.Factory.StartNew(s.Read);
+                    taskList.Add(readTask);
+                });
+            writerList.ForEach(s =>
+                {
+                    var writeTask = Task.Factory.StartNew(s.Write);
+                    taskList.Add(writeTask);
+                });
+
+            Task.WaitAll(taskList.ToArray());
+            
+            validate();
+            
+            Console.WriteLine("Для завершения нажмите на любую клавишу...");
         }
+
+        #region Validating
+
+        static void validate()
+        {
+            var messagesList = new List<string>();
+            var expectedCountMessages = writersCount*messagesCount;
+
+            var messageCounter = 0;
+            foreach (var reader in readerList)
+            {
+                foreach (var readerMessage in reader.Messages)
+                {
+                    if (messagesList.Contains(readerMessage))
+                    {
+                        Console.WriteLine(string.Format("Дублирование сообения {0}", readerMessage));
+                    }
+                    else
+                    {
+                        messagesList.Add(readerMessage);
+                    }
+                    messageCounter++;
+                }
+            }
+            if (expectedCountMessages != messageCounter)
+                Console.WriteLine("Не совпадает количество ожидаемых и фактических сообщений");
+        }
+
+        #endregion
 
         #region initialize
 
@@ -44,7 +98,7 @@ namespace Task1
 
         static void writer_Finished(object sender, EventArgs e)
         {
-            var allWriterFinished = writerList.Any(s => s.State != StateWorker.Finish);
+            var allWriterFinished = writerList.All(s => s.State == StateWorker.Finish);
             BufferWorkers.Buffer.IsClosed = allWriterFinished;
         }
 

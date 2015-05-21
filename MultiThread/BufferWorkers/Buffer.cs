@@ -11,7 +11,7 @@ namespace BufferWorkers
         
         public static bool IsEmpty
         {
-            get { return string.IsNullOrEmpty(Value); }
+            get { return string.IsNullOrEmpty(s_value); }
         }
 
         public static string Value

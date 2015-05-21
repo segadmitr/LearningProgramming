@@ -13,7 +13,16 @@ namespace BufferWorkers
         {
             while (!Buffer.IsClosed)
             {
-                Messages.Add(Buffer.Value);
+                if (!Buffer.IsEmpty)
+                {
+                    lock ("read")
+                    {
+                        if (!Buffer.IsEmpty)
+                        {
+                            Messages.Add(Buffer.Value);
+                        }
+                    }
+                }
             }
         }
 
