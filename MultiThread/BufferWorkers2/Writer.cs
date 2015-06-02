@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace BufferWorkers2
 {
@@ -43,11 +44,19 @@ namespace BufferWorkers2
             State = StateWorker.Work;
             while (Messages.Any())
             {
+                if (Buffer.IsClosed)
+                {
+                    //генерируем ложное сообщение
+                    _bufferFullEvent.Set();
+                    _bufferEmptyEvent.Set();
+                    break;
+                }
                 _bufferEmptyEvent.WaitOne();
                 var message = Messages.FirstOrDefault();
                 Buffer.Value = message;
-                _bufferFullEvent.Set();
                 Messages.Remove(message);
+                Console.WriteLine("{0} записал сообщение {1}", Task.CurrentId, message);
+                _bufferFullEvent.Set();
             }
             State = StateWorker.Finish;
         }

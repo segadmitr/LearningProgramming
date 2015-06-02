@@ -32,20 +32,22 @@ namespace Lab3Task2
 
 
             var taskList = new List<Task>();
+            bufferFullEvent.WaitOne();
+            bufferEmptyEvent.WaitOne();
 
             writerList.ForEach(s =>
             {
                 var writeTask = Task.Factory.StartNew(s.Write);
                 taskList.Add(writeTask);
             });
-
+            
             readerList.ForEach(s =>
             {
                 var readTask = Task.Factory.StartNew(s.Read);
                 taskList.Add(readTask);
             });
-           
 
+            bufferEmptyEvent.Set();
             Task.WaitAll(taskList.ToArray());
 
             validate();
@@ -108,13 +110,7 @@ namespace Lab3Task2
             var allWriterFinished = writerList.All(s => s.State == StateWorker.Finish);
             BufferWorkers2.Buffer.IsClosed = allWriterFinished;
             //если работа завершена то разблокируем читателей
-            if (allWriterFinished)
-            {
-                bufferFullEvent.Set();
-                bufferEmptyEvent.Set();
-            }
-                
-        }
+           }
 
         #endregion
 

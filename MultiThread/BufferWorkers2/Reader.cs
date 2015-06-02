@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace BufferWorkers2
 {
@@ -21,13 +23,19 @@ namespace BufferWorkers2
 
         public void Read()
         {
-            while (true)
+            while (!Buffer.IsClosed)
             {
-                _bufferFullEvent.WaitOne();
                 if (Buffer.IsClosed)
+                {
+                    //генерируем ложное сообщение
+                    _bufferFullEvent.Set();
+                    _bufferEmptyEvent.Set();
                     break;
-
-                Messages.Add(Buffer.Value);
+                }
+                _bufferFullEvent.WaitOne();
+                var message = Buffer.Value;
+                Messages.Add(message);
+                Console.WriteLine("{0} прочитал сообщение {1}", Task.CurrentId, message);
                 _bufferEmptyEvent.Set();
             }
         }
